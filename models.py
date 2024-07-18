@@ -3,6 +3,10 @@ from sqlalchemy import Integer, String, DateTime, func, ForeignKey
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncAttrs
 from sqlalchemy.orm import DeclarativeBase, mapped_column, Mapped, relationship
 import os
+from dotenv import load_dotenv
+load_dotenv()
+print("models")
+
 
 # Получаем переменные окружения для настройки подключения к PostgreSQL.
 POSTGRES_USER = os.getenv("POSTGRES_USER")
@@ -13,11 +17,11 @@ POSTGRES_PORT = os.getenv("POSTGRES_PORT")
 print(f"получаем переменные окружения? - {POSTGRES_PORT}")
 
 # Создаем строку подключения (DSN) для SQLAlchemy с использованием переменных окружения.
-engine = create_async_engine(f"postgresql+psycopg2://"
+engine = create_async_engine(f"postgresql+asyncpg://"
                              f"{POSTGRES_USER}:{POSTGRES_PASSWORD}@"
                              f"{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}")
 
-Session = async_sessionmaker(bind=engine, )
+Session = async_sessionmaker(bind=engine, expire_on_commit=False)
 
 
 # Формируем базовый класс.
